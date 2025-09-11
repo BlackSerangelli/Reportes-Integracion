@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat con DeepSeek Coder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Chat con DeepSeek Coder</h1>
+        <p>Conectado a Ollama API en localhost:11434</p>
+
+        <div class="chat-container">
+            <div id="messages" class="messages"></div>
+
+            <form id="chatForm" class="chat-form">
+                <textarea
+                    id="userInput"
+                    placeholder="Escribe tu mensaje aquí..."
+                    rows="3"
+                    required
+                ></textarea>
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+
+        <div class="status">
+            <span id="status">Estado: Verificando conexión...</span>
+            <button id="clearBtn" onclick="clearChat()" class="clear-btn">🗑️ Limpiar Chat</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
