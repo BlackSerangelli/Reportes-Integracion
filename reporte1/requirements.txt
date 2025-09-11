@@ -1,0 +1,87 @@
+# ========================================
+# Clasificador de Modelos de Nube con NLP
+# ========================================
+# Dependencias del proyecto para clasificación de modelos de nube
+# usando DeepSeek a través de OpenRouter API
+
+# ========================================
+# DEPENDENCIAS PRINCIPALES
+# ========================================
+
+# HTTP requests para comunicación con APIs
+requests>=2.31.0,<3.0.0
+
+# ========================================
+# DEPENDENCIAS DE PRUEBAS
+# ========================================
+
+# Framework de pruebas
+pytest>=7.4.0,<8.0.0
+
+# Cobertura de código para pruebas
+pytest-cov>=4.1.0,<5.0.0
+
+# Plugin para reportes HTML de cobertura
+pytest-html>=3.2.0,<4.0.0
+
+# Plugin para reportes de rendimiento
+pytest-benchmark>=4.0.0,<5.0.0
+
+# ========================================
+# DEPENDENCIAS DE DESARROLLO (OPCIONALES)
+# ========================================
+
+# Linting y formateo de código
+flake8>=6.0.0,<7.0.0
+black>=23.0.0,<24.0.0
+
+# Verificación de tipos estáticos
+mypy>=1.5.0,<2.0.0
+
+# ========================================
+# DEPENDENCIAS DE DOCUMENTACIÓN (OPCIONALES)
+# ========================================
+
+# Generación de documentación
+sphinx>=7.0.0,<8.0.0
+sphinx-rtd-theme>=1.3.0,<2.0.0
+
+# ========================================
+# NOTAS IMPORTANTES
+# ========================================
+
+# Python 3.8+ es requerido para todas las funcionalidades
+# Módulos de la biblioteca estándar utilizados:
+# - re (expresiones regulares para preprocesamiento)
+# - json (procesamiento de respuestas JSON de APIs)
+# - typing (anotaciones de tipo para mejor desarrollo)
+# - dataclasses (estructuras de datos - incluido en Python 3.7+)
+# - pathlib (manejo de rutas de archivos)
+# - os (variables de entorno y configuración)
+# - sys (manipulación del path de Python)
+
+# ========================================
+# INSTALACIÓN
+# ========================================
+
+# Para instalación básica (solo funcionalidad principal):
+# pip install -r requirements.txt
+
+# Para instalación completa con herramientas de desarrollo:
+# pip install -r requirements.txt[dev]
+
+# Para instalación con documentación:
+# pip install -r requirements.txt[doc]
+
+# ========================================
+# CONFIGURACIÓN DE ENTORNO
+# ========================================
+
+# Variables de entorno requeridas (ver config/config.env):
+# - OPENROUTER_API_KEY: Clave API de OpenRouter
+# - OPENROUTER_API_URL: URL de la API de OpenRouter
+# - DEEPSEEK_MODEL: Modelo de DeepSeek a usar
+# - MAX_TOKENS: Número máximo de tokens para respuestas
+# - TEMPERATURE: Temperatura para generación de respuestas
+# - MIN_TEXT_LENGTH: Longitud mínima de texto válido
+# - MAX_TEXT_LENGTH: Longitud máxima de texto válido
