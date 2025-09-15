@@ -1,0 +1,109 @@
+/* Reset */
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #fffdf7;
+  margin: 0;
+  padding: 20px;
+  color: #222;
+}
+
+/* Título */
+h1 {
+  text-align: center;
+  color: #444;
+  font-size: 2rem;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+/* Caja de búsqueda */
+.search-box {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.search-box input {
+  padding: 10px 14px;
+  margin: 5px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #ff7043;
+  box-shadow: 0 0 4px rgba(255, 112, 67, 0.5);
+}
+
+/* Contenedor estilo lista */
+.catalog {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Cada libro en formato fila */
+.book {
+  background: #fafafa;
+  border-left: 6px solid #ff7043;
+  border-radius: 6px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.book:hover {
+  background: #fff3ed;
+  transform: translateX(5px);
+}
+
+/* Título */
+.book h2 {
+  font-size: 1.3rem;
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+/* Autor */
+.book .author {
+  font-weight: 500;
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+/* Año y género */
+.book .meta {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 6px;
+}
+
+/* Precio */
+.book .price {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #27ae60;
+  margin-bottom: 6px;
+}
+
+/* Stock */
+.book .stock {
+  font-size: 0.85rem;
+  color: #0066cc;
+  margin-bottom: 6px;
+}
+
+/* Formato */
+.book .format {
+  font-size: 0.8rem;
+  background: #ff7043;
+  color: #fff;
+  padding: 3px 10px;
+  border-radius: 12px;
+  display: inline-block;
+}

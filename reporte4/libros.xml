@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="libros.xsl"?>
+
+<catalog>
+  <book isbn="978-0141182803">
+    <title>Crimen y castigo</title>
+    <author>Fiódor Dostoyevski</author>
+    <year>2002</year>
+    <genre>Filosofía</genre>
+    <price>15.50</price>
+    <stock>20</stock>
+    <format>Físico</format>
+  </book>
+
+  <book isbn="978-0451457998">
+    <title>Neuromante</title>
+    <author>William Gibson</author>
+    <year>2000</year>
+    <genre>Ciberpunk</genre>
+    <price>12.75</price>
+    <stock>18</stock>
+    <format>Digital</format>
+  </book>
+
+  <book isbn="978-0307277787">
+    <title>Kafka en la orilla</title>
+    <author>Haruki Murakami</author>
+    <year>2006</year>
+    <genre>Realismo mágico</genre>
+    <price>17.40</price>
+    <stock>12</stock>
+    <format>Físico</format>
+  </book>
+
+  <book isbn="978-1982137274">
+    <title>El infinito en un junco</title>
+    <author>Irene Vallejo</author>
+    <year>2020</year>
+    <genre>Ensayo</genre>
+    <price>19.90</price>
+    <stock>25</stock>
+    <format>Físico</format>
+  </book>
+
+  <book isbn="978-0385490818">
+    <title>Las ciudades invisibles</title>
+    <author>Italo Calvino</author>
+    <year>1997</year>
+    <genre>Clásico</genre>
+    <price>14.00</price>
+    <stock>16</stock>
+    <format>Mixto</format>
+  </book>
+
+  <book isbn="978-0060850524">
+    <title>Fahrenheit 451</title>
+    <author>Ray Bradbury</author>
+    <year>2006</year>
+    <genre>Ciencia ficción</genre>
+    <price>13.50</price>
+    <stock>28</stock>
+    <format>Digital</format>
+  </book>
+
+  <book isbn="978-8439730064">
+    <title>Cien años de soledad</title>
+    <author>Gabriel García Márquez</author>
+    <year>2007</year>
+    <genre>Realismo mágico</genre>
+    <price>21.00</price>
+    <stock>14</stock>
+    <format>Físico</format>
+  </book>
+
+  <book isbn="978-0307743657">
+    <title>El hombre en busca de sentido</title>
+    <author>Viktor Frankl</author>
+    <year>2011</year>
+    <genre>Psicología</genre>
+    <price>11.95</price>
+    <stock>32</stock>
+    <format>Físico</format>
+  </book>
+
+  <book isbn="978-0261103573">
+    <title>El Hobbit</title>
+    <author>J. R. R. Tolkien</author>
+    <year>2012</year>
+    <genre>Fantasía</genre>
+    <price>18.60</price>
+    <stock>19</stock>
+    <format>Digital</format>
+  </book>
+
+  <book isbn="978-0451526342">
+    <title>Rebelión en la granja</title>
+    <author>George Orwell</author>
+    <year>2003</year>
+    <genre>Política</genre>
+    <price>9.99</price>
+    <stock>40</stock>
+    <format>Mixto</format>
+  </book>
+</catalog>
