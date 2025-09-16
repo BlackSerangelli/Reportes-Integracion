@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>📚 Cliente Microservicio Libros</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header>
+    <h1>📚 Cliente Microservicio Libros (con XSL y JWT)</h1>
+    <p id="auth-status" style="text-align: right; padding-right: 20px; color: #fff;"></p>
+  </header>
+
+  <div id="login-panel">
+    <h2>Iniciar Sesión</h2>
+    <div class="config-group">
+      <label for="loginEmail">Email</label>
+      <input id="loginEmail" type="email" placeholder="usuario@correo.com">
+    </div>
+    <div class="config-group">
+      <label for="loginPassword">Contraseña</label>
+      <input id="loginPassword" type="password">
+    </div>
+    <button id="loginBtn" style="width: 100%;">Entrar</button>
+    <p id="loginStatus" class="form-status"></p>
+  </div>
+
+  <div class="container" id="main-container" style="display: none;">
+
+    <aside class="config-panel">
+      <h2>1) Configurar servidor y endpoints</h2>
+      <div class="config-group-inline">
+        <div class="config-group" style="flex: 1;">
+          <label for="protocolSelect">Protocolo</label>
+          <select id="protocolSelect">
+            <option value="http">http</option>
+            <option value="https">https</option>
+          </select>
+        </div>
+        <div class="config-group" style="flex: 2;">
+          <label for="hostInput">IP / Host</label>
+          <input id="hostInput" value="34.133.201.117">
+        </div>
+      </div>
+      <div class="config-group-inline">
+        <div class="config-group" style="flex: 1;">
+          <label for="portInput">Puerto</label>
+          <input id="portInput" value="5000">
+        </div>
+        <div class="config-group" style="flex: 2;">
+          <label for="basePathInput">Base Path</label>
+          <input id="basePathInput" value="/api">
+        </div>
+      </div>
+      <div class="endpoints-info">
+        <div class="endpoint-item">
+          <label>Endpoint: TODOS</label>
+          <input type="text" id="endpointTodos" readonly>
+        </div>
+        <div class="endpoint-item">
+          <label>Endpoint: por ISBN</label>
+          <input type="text" id="endpointIsbn" readonly>
+        </div>
+        <div class="endpoint-item">
+          <label>Endpoint: por Formato</label>
+          <input type="text" id="endpointFormat" readonly>
+        </div>
+        <div class="endpoint-item">
+          <label>Endpoint: por Autor</label>
+          <input type="text" id="endpointAuthor" readonly>
+        </div>
+      </div>
+      <div class="config-buttons">
+        <button id="saveConfigBtn">Guardar</button>
+        <button id="testConfigBtn">Probar</button>
+        <button id="resetConfigBtn">Resetear</button>
+      </div>
+      <div id="connectionStatus"></div>
+      <p class="config-note">Configuración guardada en localStorage.</p>
+    </aside>
+
+    <main class="main-panel">
+      <h2>2) Consultar y visualizar</h2>
+      <section class="controls">
+        <button id="getAllBtn">Cargar TODOS</button>
+        <button id="toggleResultsBtn" class="secondary">Mostrar / Ocultar XML</button>
+        <div class="input-group">
+          <input id="isbnInput" placeholder="ISBN">
+          <button id="getByIsbnBtn">Buscar ISBN</button>
+        </div>
+        <div class="input-group">
+          <select id="authorSelect">
+            <option value="">-- Selecciona Autor --</option>
+          </select>
+          <button id="getByAuthorBtn">Buscar Autor</button>
+        </div>
+        <div class="input-group">
+          <select id="formatSelect">
+            <option value="">-- Selecciona Formato --</option>
+          </select>
+          <button id="getByFormatBtn">Buscar Formato</button>
+        </div>
+      </section>
+      <div id="statusInfo" style="display: none; margin-bottom: 20px; text-align: center; padding: 10px; background-color: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <p id="loadStatus" style="font-weight: bold; font-size: 0.95rem;"></p>
+        <p id="bookCount" style="font-size: 0.9rem; color: #555; margin-top: 5px;"></p>
+      </div>
+      <div id="resultsContainer" style="display: none;">
+        <iframe id="resultsFrame" title="Resultados del Catálogo"></iframe>
+        <pre id="xmlSource" style="display: none;"></pre>
+      </div>
+    </main>
+
+    <div class="operations-panel">
+      <h2>3) Operaciones (Insertar / Actualizar / Borrar)</h2>
+      <div class="operations-forms">
+        <div class="form-column">
+          <h3>Insertar libro</h3>
+          <div class="config-group">
+            <label for="insertIsbn">ISBN</label>
+            <input id="insertIsbn" placeholder="978-...">
+          </div>
+          <div class="config-group">
+            <label for="insertTitle">Título</label>
+            <input id="insertTitle" placeholder="El gran libro...">
+          </div>
+          <div class="config-group">
+            <label for="insertYear">Año</label>
+            <input id="insertYear" type="number" placeholder="2023">
+          </div>
+          <div class="config-group">
+            <label for="insertPrice">Precio</label>
+            <input id="insertPrice" type="number" step="0.01" placeholder="19.99">
+          </div>
+          <div class="config-group">
+            <label for="insertStock">Stock</label>
+            <input id="insertStock" type="number" placeholder="50">
+          </div>
+          <div class="config-group">
+            <label for="insertGenre">Género (debe existir en DB)</label>
+            <input id="insertGenre" placeholder="Novela">
+          </div>
+          <div class="config-group">
+            <label for="insertFormat">Formato (debe existir en DB)</label>
+            <input id="insertFormat" placeholder="Físico">
+          </div>
+          <div class="config-group">
+            <label for="insertAuthors">Autor(es) (separados por coma)</label>
+            <input id="insertAuthors" placeholder="Autor Uno, Autor Dos">
+          </div>
+          <button id="insertBtn">Insertar</button>
+          <p id="insertStatus" class="form-status"></p>
+        </div>
+
+        <div class="form-column">
+          <h3>Actualizar libro por ISBN</h3>
+          <div class="config-group">
+            <label for="updateIsbnTarget">ISBN (a modificar)</label>
+            <input id="updateIsbnTarget" placeholder="978-...">
+          </div>
+          <div class="config-group">
+            <label for="updateTitle">Nuevo Título (opcional)</label>
+            <input id="updateTitle" placeholder="Nuevo título">
+          </div>
+          <div class="config-group">
+            <label for="updatePrice">Nuevo Precio (opcional)</label>
+            <input id="updatePrice" type="number" step="0.01" placeholder="29.99">
+          </div>
+          <div class="config-group">
+            <label for="updateStock">Nuevo Stock (opcional)</label>
+            <input id="updateStock" type="number" placeholder="100">
+          </div>
+          <button id="updateBtn">Actualizar</button>
+          <p id="updateStatus" class="form-status"></p>
+        </div>
+
+        <div class="form-column">
+          <h3>Borrar libros (múltiples)</h3>
+          <div class="config-group">
+            <label for="deleteIsbns">ISBNs separados por coma</label>
+            <textarea id="deleteIsbns" rows="5" placeholder="978-..., 978-..."></textarea>
+          </div>
+          <button id="deleteBtn">Borrar</button>
+          <p id="deleteStatus" class="form-status"></p>
+        </div>
+      </div>
+    </div>
+
+  </div> <script src="{{ url_for('static', filename='utils.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
