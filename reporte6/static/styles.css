@@ -1,0 +1,343 @@
+/* ==== RESET ==== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ==== BODY ==== */
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: #f4f6f9;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+/* ==== HEADER ==== */
+header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  color: #1e88e5;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+header p {
+  color: #555;
+}
+
+/* ==== CONTROLS SECTION ==== */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+/* ==== BUTTONS ==== */
+button {
+  background: #1e88e5;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background: #1565c0;
+}
+
+/* ==== INPUTS ==== */
+input,
+select {
+  padding: 9px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #1e88e5;
+}
+
+/* ==== INPUT GROUPS ==== */
+.input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ==== TABLE (cuando uses XSL) ==== */
+table {
+  width: 95%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background: #1e88e5;
+  color: #fff;
+}
+
+thead th {
+  padding: 14px;
+  text-align: left;
+  font-weight: 600;
+}
+
+tbody tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+tbody td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+tbody tr:hover {
+  background: #e3f2fd;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.config-panel {
+  flex: 1;
+  min-width: 320px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  height: fit-content;
+}
+
+.main-panel {
+  flex: 2.5;
+  min-width: 400px;
+}
+
+.config-panel h2, .main-panel h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #1e88e5;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 8px;
+}
+
+.config-group {
+  margin-bottom: 15px;
+}
+
+.config-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.config-group input {
+  width: 100%;
+}
+
+.config-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+#connectionStatus {
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* ==== RESULTADOS CON IFRAME ==== */
+#resultsContainer {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative; /* Añadido */
+}
+
+#resultsFrame {
+  width: 100%;
+  min-height: 600px;
+  border: none;
+  background: #fff;
+  display: block; /* Aseguramos display block */
+}
+
+/* ==== NUEVO: Estilos para el XML crudo ==== */
+#xmlSource {
+  width: 100%;
+  min-height: 600px;
+  border: none;
+  background: #fdfdfd; /* Fondo ligeramente gris */
+  padding: 15px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #111;
+  white-space: pre-wrap; /* Para que el texto se ajuste */
+  word-break: break-all; /* Romper palabras largas */
+  overflow-y: auto; /* Scroll vertical */
+  box-sizing: border-box; /* Para que el padding no afecte el ancho */
+}
+/* ======================================== */
+
+
+.config-group-inline {
+  display: flex;
+  gap: 15px;
+}
+
+.endpoints-info {
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.endpoint-item {
+  margin-bottom: 10px;
+}
+
+.endpoint-item label {
+  font-size: 0.85rem;
+  color: #555;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.endpoint-item input[readonly] {
+  background: #f4f4f4;
+  color: #333;
+  font-family: monospace;
+  font-size: 0.9rem;
+  border: 1px solid #ddd;
+}
+
+.config-note {
+  font-size: 0.8rem;
+  color: #777;
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* Estilo para botón secundario (Mostrar/Ocultar) */
+button.secondary {
+  background: #6c757d;
+}
+button.secondary:hover {
+  background: #5a6268;
+}
+
+.operations-panel {
+  /* Ocupa todo el ancho en el flex-wrap */
+  flex-basis: 100%;
+  margin-top: 20px;
+
+  /* Estilos copiados de .config-panel para consistencia */
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.operations-panel h2 {
+  /* Estilos copiados de .config-panel h2 */
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #1e88e5;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 8px;
+}
+
+.operations-forms {
+  display: flex;
+  flex-wrap: wrap; /* Permitir que se ajusten en pantallas pequeñas */
+  gap: 20px;
+}
+
+.form-column {
+  flex: 1;
+  min-width: 280px; /* Ancho mínimo para cada columna */
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 6px;
+  background: #fdfdfd;
+}
+
+.form-column h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
+/* Estilo para el textarea */
+textarea {
+  width: 100%;
+  padding: 9px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease;
+  resize: vertical; /* Permitir redimensionar verticalmente */
+}
+
+textarea:focus {
+  border-color: #1e88e5;
+}
+
+/* Botones de operaciones con colores */
+#insertBtn {
+  background: #28a745; /* Verde */
+}
+#insertBtn:hover {
+  background: #218838;
+}
+
+#updateBtn {
+  background: #ffc107; /* Amarillo */
+  color: #212529;
+}
+#updateBtn:hover {
+  background: #e0a800;
+}
+
+#deleteBtn {
+  background: #dc3545; /* Rojo */
+}
+#deleteBtn:hover {
+  background: #c82333;
+}
+
+/* Mensajes de estado para los formularios */
+.form-status {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}

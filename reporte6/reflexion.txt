@@ -1,0 +1,7 @@
+Esta nueva parte de la actividad me sirvió para entender cómo organizar mejor un microservicio por dentro. En la reflexión anterior, me di cuenta de que el microservicio funciona como una "caja negra" o un "guardián" que protege sus propios datos. Ahora, con CQRS, aprendí a organizar las cosas dentro de esa caja.
+
+El cambio fue tomar nuestro archivo micro.py y, básicamente, partirlo en dos: una parte que solo se encarga de leer datos (los "Queries", o todos los GET) y otra que solo se encarga de cambiar datos (los "Commands", o sea, POST, PUT y DELETE).
+
+Lo que más me llamó la atención fue que, aunque cambiamos todo el orden del micro.py, ¡no tuvimos que tocar ni un solo archivo del cliente! El index.html y el script.js siguieron funcionando exactamente igual. Esto me demostró que mientras el "contrato" de la API (las URLs) no cambie, al cliente no le importa cómo esté hecho el servicio por dentro.
+
+El verdadero aprendizaje para mí fue que ahora el código está mucho más limpio. Si algo falla cuando busco un libro, sé que el problema debe estar en la "Sección de Queries". Si un error pasa al querer insertar algo (como el de "Autor Jorge inválido"), sé que tengo que revisar la "Sección de Commands".
