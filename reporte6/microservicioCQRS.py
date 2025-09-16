@@ -13,8 +13,15 @@ CORS(
     allow_headers=["Content-Type", "Accept"],
 )
 
-# --- Configuración DB ---
-DB_CONFIG = {
+# ==============================================================================
+# --- INICIO DE IMPLEMENTACIÓN CQRS ---
+# ==============================================================================
+
+# --- Configuración DB (Separada para Queries y Commands) ---
+
+# En un sistema real, DB_CONFIG_QUERY podría apuntar a una réplica de solo lectura
+# optimizada para consultas rápidas.
+DB_CONFIG_QUERY = {
     'host': 'localhost',
     'user': 'libros_user',
     'passwd': '666',
@@ -22,14 +29,35 @@ DB_CONFIG = {
     'charset': 'utf8mb4'
 }
 
-def get_db_connection():
+# DB_CONFIG_COMMAND apunta a la base de datos primaria (maestra)
+# donde se realizan todas las escrituras.
+DB_CONFIG_COMMAND = {
+    'host': 'localhost',
+    'user': 'libros_user',
+    'passwd': '666',
+    'db': 'Libros',
+    'charset': 'utf8mb4'
+}
+
+# --- Conexiones de Base de Datos ---
+
+def get_db_connection_query():
+    """Obtiene una conexión de BD para operaciones de LECTURA (Queries)."""
     try:
-        return MySQLdb.connect(**DB_CONFIG)
+        return MySQLdb.connect(**DB_CONFIG_QUERY)
     except MySQLdb.Error as e:
-        print(f"Error DB: {e}")
+        print(f"Error DB (Query): {e}")
         return None
 
-# --- Helpers XML ---
+def get_db_connection_command():
+    """Obtiene una conexión de BD para operaciones de ESCRITURA (Commands)."""
+    try:
+        return MySQLdb.connect(**DB_CONFIG_COMMAND)
+    except MySQLdb.Error as e:
+        print(f"Error DB (Command): {e}")
+        return None
+
+# --- Helpers XML (Sin cambios, son parte de la capa de presentación) ---
 def create_xml_response(books_data):
     catalog = ET.Element('catalog')
     for book_dict in books_data:
@@ -55,16 +83,20 @@ def create_message_xml(message, status_code=200):
     return Response(ET.tostring(root, encoding='UTF-8', xml_declaration=True).decode('utf-8'),
                     mimetype='application/xml', status=status_code)
 
-# --- Endpoint para servir el XSL ---
+# --- Endpoint para servir el XSL (Sin cambios) ---
 @app.route('/libros.xsl')
 def get_xsl():
+    # Asume que libros.xsl está en el mismo directorio que este script
     return send_from_directory('.', 'libros.xsl', mimetype='application/xml')
 
-# --- Endpoints API ---
-@app.route('/api/books', methods=['GET'])
-def get_books():
-    conn = get_db_connection()
-    if not conn: return create_message_xml("Error DB", 500)
+# ==============================================================================
+# --- SECCIÓN DE QUERIES (Lecturas) ---
+# ==============================================================================
+
+def handle_get_all_books_query():
+    """Lógica de negocio para obtener todos los libros."""
+    conn = get_db_connection_query()
+    if not conn: return None
     cur = conn.cursor(MySQLdb.cursors.DictCursor)
     query = """
     SELECT b.isbn, b.title, b.year, b.price, b.stock,
@@ -81,13 +113,14 @@ def get_books():
     cur.execute(query)
     rows = cur.fetchall()
     cur.close(); conn.close()
-    return create_xml_response(rows)
+    return rows
 
-@app.route('/api/books/isbn/<isbn>', methods=['GET'])
-def get_book(isbn):
-    conn = get_db_connection()
-    if not conn: return create_message_xml("Error DB", 500)
+def handle_get_book_by_isbn_query(isbn):
+    """Lógica de negocio para obtener un libro por ISBN."""
+    conn = get_db_connection_query()
+    if not conn: return None
     cur = conn.cursor(MySQLdb.cursors.DictCursor)
+    # --- QUERY CORREGIDA ---
     query = """
     SELECT b.isbn, b.title, b.year, b.price, b.stock,
            g.name AS genre, f.name AS format,
@@ -102,13 +135,14 @@ def get_book(isbn):
     cur.execute(query, (isbn,))
     row = cur.fetchone()
     cur.close(); conn.close()
-    return create_xml_response([row]) if row else create_message_xml("No encontrado", 404)
+    return [row] if row else []
 
-@app.route('/api/books/author/<author>', methods=['GET'])
-def get_books_by_author(author):
-    conn = get_db_connection()
-    if not conn: return create_message_xml("Error DB", 500)
+def handle_get_books_by_author_query(author):
+    """Lógica de negocio para obtener libros por autor."""
+    conn = get_db_connection_query()
+    if not conn: return None
     cur = conn.cursor(MySQLdb.cursors.DictCursor)
+    # --- QUERY CORREGIDA ---
     query = """
     SELECT b.isbn, b.title, b.year, b.price, b.stock,
            g.name AS genre, f.name AS format,
@@ -123,13 +157,14 @@ def get_books_by_author(author):
     cur.execute(query, (author,))
     rows = cur.fetchall()
     cur.close(); conn.close()
-    return create_xml_response(rows) if rows else create_message_xml("No se encontraron libros", 404)
+    return rows
 
-@app.route('/api/books/format/<format>', methods=['GET'])
-def get_books_by_format(format):
-    conn = get_db_connection()
-    if not conn: return create_message_xml("Error DB", 500)
+def handle_get_books_by_format_query(format_name):
+    """Lógica de negocio para obtener libros por formato."""
+    conn = get_db_connection_query()
+    if not conn: return None
     cur = conn.cursor(MySQLdb.cursors.DictCursor)
+    # --- QUERY CORREGIDA ---
     query = """
     SELECT b.isbn, b.title, b.year, b.price, b.stock,
            g.name AS genre, f.name AS format,
@@ -141,10 +176,139 @@ def get_books_by_format(format):
     LEFT JOIN authors a ON ba.author_id = a.author_id
     WHERE f.name=%s GROUP BY b.isbn;
     """
-    cur.execute(query, (format,))
+    cur.execute(query, (format_name,))
     rows = cur.fetchall()
     cur.close(); conn.close()
-    return create_xml_response(rows) if rows else create_message_xml("No se encontraron libros", 404)
+    return rows
+
+# --- Endpoints de la API (Queries) ---
+
+@app.route('/api/books', methods=['GET'])
+def get_books():
+    rows = handle_get_all_books_query()
+    if rows is None: return create_message_xml("Error DB (Query)", 500)
+    return create_xml_response(rows)
+
+@app.route('/api/books/isbn/<isbn>', methods=['GET'])
+def get_book(isbn):
+    rows = handle_get_book_by_isbn_query(isbn)
+    if rows is None: return create_message_xml("Error DB (Query)", 500)
+    if not rows: return create_message_xml("No encontrado", 404)
+    return create_xml_response(rows)
+
+@app.route('/api/books/author/<author>', methods=['GET'])
+def get_books_by_author(author):
+    rows = handle_get_books_by_author_query(author)
+    if rows is None: return create_message_xml("Error DB (Query)", 500)
+    if not rows: return create_message_xml("No se encontraron libros", 404)
+    return create_xml_response(rows)
+
+@app.route('/api/books/format/<format>', methods=['GET'])
+def get_books_by_format(format):
+    rows = handle_get_books_by_format_query(format)
+    if rows is None: return create_message_xml("Error DB (Query)", 500)
+    if not rows: return create_message_xml("No se encontraron libros", 404)
+    return create_xml_response(rows)
+
+# ==============================================================================
+# --- SECCIÓN DE COMMANDS (Escrituras) ---
+# ==============================================================================
+
+class CommandError(Exception):
+    """Excepción personalizada para errores de lógica de negocio en comandos."""
+    def __init__(self, message, status_code=400):
+        self.message = message
+        self.status_code = status_code
+        super().__init__(self.message)
+
+def handle_insert_book_command(data):
+    """Lógica de negocio para insertar un libro."""
+    conn = get_db_connection_command()
+    if not conn: raise CommandError("Error DB (Command)", 500)
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT genre_id FROM genres WHERE name=%s", (data['genre'],))
+        g = cur.fetchone()
+        if not g: raise CommandError("Género inválido")
+
+        cur.execute("SELECT format_id FROM formats WHERE name=%s", (data['format'],))
+        f = cur.fetchone()
+        if not f: raise CommandError("Formato inválido")
+
+        cur.execute("INSERT INTO books (isbn,title,year,price,stock,genre_id,format_id) VALUES (%s,%s,%s,%s,%s,%s,%s)",
+            (data['isbn'], data['title'], data['year'], data['price'], data['stock'], g[0], f[0]))
+
+        for author_name in [a.strip() for a in data['authors'].split(',')]:
+            cur.execute("SELECT author_id FROM authors WHERE name=%s", (author_name,))
+            a = cur.fetchone()
+            if not a: raise CommandError(f"Autor {author_name} inválido")
+            cur.execute("INSERT INTO book_authors (isbn,author_id) VALUES (%s,%s)", (data['isbn'], a[0]))
+
+        conn.commit()
+    except MySQLdb.Error as e:
+        conn.rollback()
+        # Devuelve un código de error más específico si es una clave duplicada
+        if e.args[0] == 1062: # Código de error 'Duplicate entry'
+            raise CommandError(f"Error: Ya existe un libro con el ISBN {data['isbn']}", 409)
+        raise CommandError(f"Error MySQL: {e}", 500)
+    finally:
+        cur.close(); conn.close()
+
+def handle_update_book_command(isbn, data):
+    """Lógica de negocio para actualizar un libro."""
+    conn = get_db_connection_command()
+    if not conn: raise CommandError("Error DB (Command)", 500)
+    cur = conn.cursor()
+    try:
+        fields, vals = [], []
+        # Solo permite actualizar estos campos
+        for k in ['title','year','price','stock']:
+            if k in data:
+                fields.append(f"{k}=%s")
+                vals.append(data[k])
+
+        if not fields: raise CommandError("No hay campos para actualizar", 400)
+
+        sql = f"UPDATE books SET {', '.join(fields)} WHERE isbn=%s"
+        vals.append(isbn)
+        cur.execute(sql, vals)
+
+        # Comprobar si algo fue realmente actualizado
+        if cur.rowcount == 0:
+            raise CommandError(f"No se encontró ningún libro con el ISBN {isbn} para actualizar", 404)
+
+        conn.commit()
+    except MySQLdb.Error as e:
+        conn.rollback()
+        raise CommandError(f"Error MySQL: {e}", 500)
+    finally:
+        cur.close(); conn.close()
+
+def handle_delete_books_command(isbns):
+    """Lógica de negocio para borrar libros."""
+    conn = get_db_connection_command()
+    if not conn: raise CommandError("Error DB (Command)", 500)
+    cur = conn.cursor()
+    try:
+        format_str = ','.join(['%s']*len(isbns))
+
+        # Borrar de book_authors primero por la restricción de clave foránea
+        cur.execute(f"DELETE FROM book_authors WHERE isbn IN ({format_str})", tuple(isbns))
+        # Borrar de books después
+        cur.execute(f"DELETE FROM books WHERE isbn IN ({format_str})", tuple(isbns))
+
+        # Comprobar si se borró algo
+        if cur.rowcount == 0:
+             raise CommandError("No se encontraron libros con esos ISBNs para borrar", 404)
+
+        conn.commit()
+    except MySQLdb.Error as e:
+        conn.rollback()
+        raise CommandError(f"Error MySQL: {e}", 500)
+    finally:
+        cur.close(); conn.close()
+
+# --- Endpoints de la API (Commands) ---
 
 @app.route('/api/books/insert', methods=['POST'])
 def insert_book():
@@ -154,86 +318,45 @@ def insert_book():
     if not all(k in data for k in required):
         return create_message_xml("Faltan campos", 400)
 
-    conn = get_db_connection()
-    if not conn: return create_message_xml("Error DB", 500)
-    cur = conn.cursor()
     try:
-        # genre
-        cur.execute("SELECT genre_id FROM genres WHERE name=%s", (data['genre'],))
-        g = cur.fetchone()
-        if not g: return create_message_xml("Género inválido", 400)
-        # format
-        cur.execute("SELECT format_id FROM formats WHERE name=%s", (data['format'],))
-        f = cur.fetchone()
-        if not f: return create_message_xml("Formato inválido", 400)
-
-        cur.execute("INSERT INTO books (isbn,title,year,price,stock,genre_id,format_id) VALUES (%s,%s,%s,%s,%s,%s,%s)",
-            (data['isbn'], data['title'], data['year'], data['price'], data['stock'], g[0], f[0]))
-
-        for author_name in [a.strip() for a in data['authors'].split(',')]:
-            cur.execute("SELECT author_id FROM authors WHERE name=%s", (author_name,))
-            a = cur.fetchone()
-            if not a: return create_message_xml(f"Autor {author_name} inválido", 400)
-            cur.execute("INSERT INTO book_authors (isbn,author_id) VALUES (%s,%s)", (data['isbn'], a[0]))
-
-        conn.commit()
+        handle_insert_book_command(data)
         return create_message_xml("Libro insertado", 201)
-    except MySQLdb.Error as e:
-        conn.rollback()
-        return create_message_xml(f"Error: {e}", 500)
-    finally:
-        cur.close(); conn.close()
+    except CommandError as e:
+        return create_message_xml(e.message, e.status_code)
 
 @app.route('/api/books/update/<isbn>', methods=['PUT'])
 def update_book(isbn):
     data = request.get_json()
     if not data: return create_message_xml("Sin JSON", 400)
-    conn = get_db_connection()
-    if not conn: return create_message_xml("Error DB", 500)
-    cur = conn.cursor()
+
     try:
-        fields, vals = [], []
-        for k in ['title','year','price','stock']:
-            if k in data:
-                fields.append(f"{k}=%s")
-                vals.append(data[k])
-        if fields:
-            sql = f"UPDATE books SET {', '.join(fields)} WHERE isbn=%s"
-            vals.append(isbn)
-            cur.execute(sql, vals)
-            conn.commit()
+        handle_update_book_command(isbn, data)
         return create_message_xml("Libro actualizado", 200)
-    except MySQLdb.Error as e:
-        conn.rollback()
-        return create_message_xml(f"Error: {e}", 500)
-    finally:
-        cur.close(); conn.close()
+    except CommandError as e:
+        return create_message_xml(e.message, e.status_code)
 
 @app.route('/api/books/delete', methods=['DELETE'])
 def delete_books():
     data = request.get_json()
-    if not data or 'isbns' not in data: return create_message_xml("Formato incorrecto", 400)
-    isbns = data['isbns']
-    conn = get_db_connection()
-    if not conn: return create_message_xml("Error DB", 500)
-    cur = conn.cursor()
-    try:
-        format_str = ','.join(['%s']*len(isbns))
-        cur.execute(f"DELETE FROM book_authors WHERE isbn IN ({format_str})", tuple(isbns))
-        cur.execute(f"DELETE FROM books WHERE isbn IN ({format_str})", tuple(isbns))
-        conn.commit()
-        return create_message_xml("Libros borrados", 200)
-    except MySQLdb.Error as e:
-        conn.rollback()
-        return create_message_xml(f"Error: {e}", 500)
-    finally:
-        cur.close(); conn.close()
+    if not data or 'isbns' not in data or not data['isbns']:
+        return create_message_xml("Formato incorrecto o lista de ISBNs vacía", 400)
 
-# --- Página principal ---
+    try:
+        handle_delete_books_command(data['isbns'])
+        return create_message_xml("Libros borrados", 200)
+    except CommandError as e:
+        return create_message_xml(e.message, e.status_code)
+
+# ==============================================================================
+# --- FIN DE IMPLEMENTACIÓN CQRS ---
+# ==============================================================================
+
+# --- Página principal (Sin cambios) ---
 @app.route('/')
 def home():
+    # Asume que index.html está en una carpeta 'templates'
     return render_template('index.html')
 
-# --- Run ---
+# --- Run (Sin cambios) ---
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
