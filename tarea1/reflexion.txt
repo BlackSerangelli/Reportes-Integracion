@@ -1,0 +1,5 @@
+La realización de esta actividad me permitió comprender con mayor claridad las diferencias y similitudes entre los modelos de servicio en la nube: IaaS, PaaS, SaaS y FaaS. Al elaborar el mapa conceptual en una herramienta visual como Miro/Lucidchart, pude organizar la información de forma estructurada y comparativa, lo que facilitó identificar el nivel de responsabilidad que asume el proveedor y el usuario en cada modelo.
+
+Asimismo, al incluir ejemplos reales de proveedores como AWS, Google Cloud, Azure o Heroku, pude relacionar la teoría con casos concretos que se usan en la industria, reforzando mi entendimiento práctico. La integración del mapa a una página web también fue un ejercicio útil, ya que permitió no solo plasmar la información, sino presentarla en un formato accesible y profesional, como si fuera un recurso de consulta en línea.
+
+En general, considero que la actividad fue valiosa porque me ayudó a visualizar mejor cómo se adaptan los diferentes modelos de nube a las necesidades de una organización, y me deja más claro por qué es importante seleccionar la opción adecuada según el tipo de proyecto o servicio que se quiera implementar.

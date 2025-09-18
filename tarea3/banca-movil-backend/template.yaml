@@ -1,0 +1,288 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Arquitectura Serverless para Aplicación de Banca Móvil
+  
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, staging, prod]
+    Description: Ambiente de despliegue
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: python3.9
+    Environment:
+      Variables:
+        ENVIRONMENT: !Ref Environment
+        CORE_BANKING_ENDPOINT: !Sub "{{resolve:ssm:/${Environment}/core-banking/endpoint}}"
+        
+Resources:
+  # API Gateway
+  BankingApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Environment
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt UserPool.Arn
+      GatewayResponses:
+        DEFAULT_4xx:
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+        DEFAULT_5xx:
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  # Cognito User Pool para Autenticación
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "${AWS::StackName}-user-pool"
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+      MfaConfiguration: OPTIONAL
+      EnabledMfas:
+        - SMS_MFA
+      SmsConfiguration:
+        SnsCallerArn: !GetAtt CognitoSMSRole.Arn
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+        - Name: phone_number
+          AttributeDataType: String
+          Required: true
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: !Sub "${AWS::StackName}-client"
+      GenerateSecret: false
+
+  CognitoSMSRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cognito-idp.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CognitoSMSPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sns:Publish
+                Resource: "*"
+
+  # DynamoDB Tables
+  UserProfilesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-user-profiles"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: user_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user_id
+          KeyType: HASH
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+
+  TransactionCacheTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-transaction-cache"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: account_id
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: account_id
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+  # SNS Topic para Notificaciones
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "${AWS::StackName}-notifications"
+
+  # SQS Queue para procesamiento asíncrono
+  TransactionQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${AWS::StackName}-transactions"
+      VisibilityTimeoutSeconds: 120
+      MessageRetentionPeriod: 1209600 # 14 días
+
+  # Lambda Functions
+  GetBalanceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: balance.get_balance_handler
+      Events:
+        GetBalance:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BankingApi
+            Path: /balance/{account_id}
+            Method: get
+      Environment:
+        Variables:
+          USER_PROFILES_TABLE: !Ref UserProfilesTable
+          TRANSACTION_CACHE_TABLE: !Ref TransactionCacheTable
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserProfilesTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref TransactionCacheTable
+
+  TransferFundsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: transfer.transfer_funds_handler
+      Events:
+        TransferFunds:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BankingApi
+            Path: /transfer
+            Method: post
+      Environment:
+        Variables:
+          USER_PROFILES_TABLE: !Ref UserProfilesTable
+          NOTIFICATION_TOPIC: !Ref NotificationTopic
+          TRANSACTION_QUEUE: !Ref TransactionQueue
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserProfilesTable
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt NotificationTopic.TopicName
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt TransactionQueue.QueueName
+
+  GetTransactionsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: transactions.get_transactions_handler
+      Events:
+        GetTransactions:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BankingApi
+            Path: /transactions/{account_id}
+            Method: get
+      Environment:
+        Variables:
+          TRANSACTION_CACHE_TABLE: !Ref TransactionCacheTable
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref TransactionCacheTable
+
+  UpdateProfileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: profile.update_profile_handler
+      Events:
+        UpdateProfile:
+          Type: Api
+          Properties:
+            RestApiId: !Ref BankingApi
+            Path: /profile
+            Method: put
+      Environment:
+        Variables:
+          USER_PROFILES_TABLE: !Ref UserProfilesTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserProfilesTable
+
+  SendNotificationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: notification.send_notification_handler
+      Events:
+        NotificationEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref NotificationTopic
+      Environment:
+        Variables:
+          USER_PROFILES_TABLE: !Ref UserProfilesTable
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UserProfilesTable
+
+  ProcessTransactionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/handlers/
+      Handler: transaction_processor.process_transaction_handler
+      Events:
+        TransactionEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt TransactionQueue.Arn
+            BatchSize: 10
+      Environment:
+        Variables:
+          TRANSACTION_CACHE_TABLE: !Ref TransactionCacheTable
+          NOTIFICATION_TOPIC: !Ref NotificationTopic
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TransactionCacheTable
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt NotificationTopic.TopicName
+
+Outputs:
+  BankingApiUrl:
+    Description: "URL de la API de Banca Móvil"
+    Value: !Sub "https://${BankingApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}"
+    Export:
+      Name: !Sub "${AWS::StackName}-api-url"
+
+  UserPoolId:
+    Description: "ID del User Pool de Cognito"
+    Value: !Ref UserPool
+    Export:
+      Name: !Sub "${AWS::StackName}-user-pool-id"
+
+  UserPoolClientId:
+    Description: "ID del Cliente del User Pool"
+    Value: !Ref UserPoolClient
+    Export:
+      Name: !Sub "${AWS::StackName}-user-pool-client-id"
