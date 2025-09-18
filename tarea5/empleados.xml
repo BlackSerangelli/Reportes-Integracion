@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css" href="empleados.css"?>
+<company>
+  <department name="Recursos Humanos">
+    <employee id="001" hire_date="2020-03-15">
+      <first_name>María</first_name>
+      <last_name>García</last_name>
+      <position>Gerente de RRHH</position>
+      <salary>75000</salary>
+      <contract_type>tiempo_completo</contract_type>
+    </employee>
+    <employee id="002" hire_date="2021-07-22">
+      <first_name>Carlos</first_name>
+      <last_name>Rodríguez</last_name>
+      <position>Especialista en Reclutamiento</position>
+      <salary>45000</salary>
+      <contract_type>tiempo_completo</contract_type>
+    </employee>
+    <employee id="003" hire_date="2022-01-10">
+      <first_name>Ana</first_name>
+      <last_name>López</last_name>
+      <position>Asistente de RRHH</position>
+      <salary>35000</salary>
+      <contract_type>tiempo_parcial</contract_type>
+    </employee>
+  </department>
+  
+  <department name="Tecnología">
+    <employee id="004" hire_date="2019-05-08">
+      <first_name>Luis</first_name>
+      <last_name>Martínez</last_name>
+      <position>Desarrollador Senior</position>
+      <salary>85000</salary>
+      <contract_type>tiempo_completo</contract_type>
+    </employee>
+    <employee id="005" hire_date="2020-11-30">
+      <first_name>Sofia</first_name>
+      <last_name>Hernández</last_name>
+      <position>Analista de Sistemas</position>
+      <salary>60000</salary>
+      <contract_type>tiempo_completo</contract_type>
+    </employee>
+    <employee id="006" hire_date="2021-09-14">
+      <first_name>Diego</first_name>
+      <last_name>Morales</last_name>
+      <position>Desarrollador Junior</position>
+      <salary>40000</salary>
+      <contract_type>tiempo_parcial</contract_type>
+    </employee>
+    <employee id="007" hire_date="2023-02-28">
+      <first_name>Carmen</first_name>
+      <last_name>Ruiz</last_name>
+      <position>DevOps Engineer</position>
+      <salary>70000</salary>
+      <contract_type>tiempo_completo</contract_type>
+    </employee>
+  </department>
+  
+  <department name="Ventas">
+    <employee id="008" hire_date="2018-12-03">
+      <first_name>Roberto</first_name>
+      <last_name>Jiménez</last_name>
+      <position>Director de Ventas</position>
+      <salary>90000</salary>
+      <contract_type>tiempo_completo</contract_type>
+    </employee>
+    <employee id="009" hire_date="2020-06-17">
+      <first_name>Patricia</first_name>
+      <last_name>Vargas</last_name>
+      <position>Ejecutiva de Ventas</position>
+      <salary>50000</salary>
+      <contract_type>tiempo_completo</contract_type>
+    </employee>
+    <employee id="010" hire_date="2022-04-05">
+      <first_name>Andrés</first_name>
+      <last_name>Torres</last_name>
+      <position>Representante de Ventas</position>
+      <salary>35000</salary>
+      <contract_type>tiempo_parcial</contract_type>
+    </employee>
+  </department>
+  
+  <department name="Marketing">
+    <employee id="011" hire_date="2019-10-12">
+      <first_name>Isabella</first_name>
+      <last_name>Castro</last_name>
+      <position>Gerente de Marketing</position>
+      <salary>65000</salary>
+      <contract_type>tiempo_completo</contract_type>
+    </employee>
+    <employee id="012" hire_date="2021-03-25">
+      <first_name>Miguel</first_name>
+      <last_name>Peña</last_name>
+      <position>Especialista en Marketing Digital</position>
+      <salary>48000</salary>
+      <contract_type>tiempo_completo</contract_type>
+    </employee>
+  </department>
+</company>
