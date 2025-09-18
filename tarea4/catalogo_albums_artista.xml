@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="1_albums_por_artista.xsl"?>
+<catalogo>
+    <artista id="1" nombre="The Beatles" pais="Reino Unido">
+        <album id="101" titulo="Abbey Road" year="1969" genero="Rock">
+            <cancion titulo="Come Together" duracion="4:21" single="true"/>
+            <cancion titulo="Something" duracion="3:03" single="true"/>
+            <cancion titulo="Maxwell's Silver Hammer" duracion="3:27" single="false"/>
+            <cancion titulo="Oh! Darling" duracion="3:26" single="false"/>
+            <cancion titulo="Octopus's Garden" duracion="2:51" single="false"/>
+            <cancion titulo="I Want You (She's So Heavy)" duracion="7:47" single="false"/>
+            <cancion titulo="Here Comes the Sun" duracion="3:05" single="true"/>
+            <cancion titulo="Because" duracion="2:45" single="false"/>
+            <cancion titulo="You Never Give Me Your Money" duracion="3:55" single="false"/>
+            <cancion titulo="Sun King" duracion="2:26" single="false"/>
+            <cancion titulo="Mean Mr. Mustard" duracion="1:06" single="false"/>
+            <cancion titulo="Polythene Pam" duracion="1:12" single="false"/>
+            <cancion titulo="She Came in Through the Bathroom Window" duracion="1:57" single="false"/>
+            <cancion titulo="Golden Slumbers" duracion="1:31" single="false"/>
+            <cancion titulo="Carry That Weight" duracion="1:36" single="false"/>
+            <cancion titulo="The End" duracion="2:05" single="false"/>
+        </album>
+        <album id="102" titulo="Let It Be" year="1970" genero="Rock">
+            <cancion titulo="Two of Us" duracion="3:36" single="false"/>
+            <cancion titulo="Dig a Pony" duracion="3:54" single="false"/>
+            <cancion titulo="Across the Universe" duracion="3:48" single="false"/>
+            <cancion titulo="I Me Mine" duracion="2:25" single="false"/>
+            <cancion titulo="Dig It" duracion="0:50" single="false"/>
+            <cancion titulo="Let It Be" duracion="4:03" single="true"/>
+            <cancion titulo="Maggie Mae" duracion="0:40" single="false"/>
+            <cancion titulo="I've Got a Feeling" duracion="3:37" single="false"/>
+            <cancion titulo="One After 909" duracion="2:55" single="false"/>
+            <cancion titulo="The Long and Winding Road" duracion="3:37" single="true"/>
+            <cancion titulo="For You Blue" duracion="2:32" single="false"/>
+            <cancion titulo="Get Back" duracion="3:07" single="true"/>
+        </album>
+    </artista>
+    
+    <artista id="2" nombre="Michael Jackson" pais="Estados Unidos">
+        <album id="201" titulo="Thriller" year="1982" genero="Pop">
+            <cancion titulo="Wanna Be Startin' Somethin'" duracion="6:02" single="false"/>
+            <cancion titulo="Baby Be Mine" duracion="4:20" single="false"/>
+            <cancion titulo="The Girl Is Mine" duracion="3:42" single="true"/>
+            <cancion titulo="Thriller" duracion="5:57" single="true"/>
+            <cancion titulo="Beat It" duracion="4:18" single="true"/>
+            <cancion titulo="Billie Jean" duracion="4:54" single="true"/>
+            <cancion titulo="Human Nature" duracion="4:06" single="true"/>
+            <cancion titulo="P.Y.T. (Pretty Young Thing)" duracion="3:58" single="false"/>
+            <cancion titulo="The Lady in My Life" duracion="4:59" single="false"/>
+        </album>
+        <album id="202" titulo="Bad" year="1987" genero="Pop">
+            <cancion titulo="Bad" duracion="4:07" single="true"/>
+            <cancion titulo="The Way You Make Me Feel" duracion="4:58" single="true"/>
+            <cancion titulo="Speed Demon" duracion="4:01" single="false"/>
+            <cancion titulo="Liberian Girl" duracion="3:53" single="true"/>
+            <cancion titulo="Just Good Friends" duracion="4:06" single="false"/>
+            <cancion titulo="Another Part of Me" duracion="3:53" single="true"/>
+            <cancion titulo="Man in the Mirror" duracion="5:19" single="true"/>
+            <cancion titulo="I Just Can't Stop Loving You" duracion="4:12" single="true"/>
+            <cancion titulo="Dirty Diana" duracion="4:40" single="true"/>
+            <cancion titulo="Smooth Criminal" duracion="4:17" single="true"/>
+            <cancion titulo="Leave Me Alone" duracion="4:38" single="true"/>
+        </album>
+    </artista>
+    
+    <artista id="3" nombre="Queen" pais="Reino Unido">
+        <album id="301" titulo="A Night at the Opera" year="1975" genero="Rock">
+            <cancion titulo="Death on Two Legs" duracion="3:43" single="false"/>
+            <cancion titulo="Lazing on a Sunday Afternoon" duracion="1:08" single="false"/>
+            <cancion titulo="I'm in Love with My Car" duracion="3:05" single="false"/>
+            <cancion titulo="You're My Best Friend" duracion="2:52" single="true"/>
+            <cancion titulo="'39" duracion="3:30" single="false"/>
+            <cancion titulo="Sweet Lady" duracion="4:03" single="false"/>
+            <cancion titulo="Seaside Rendezvous" duracion="2:15" single="false"/>
+            <cancion titulo="The Prophet's Song" duracion="8:21" single="false"/>
+            <cancion titulo="Love of My Life" duracion="3:38" single="false"/>
+            <cancion titulo="Good Company" duracion="3:26" single="false"/>
+            <cancion titulo="Bohemian Rhapsody" duracion="5:55" single="true"/>
+            <cancion titulo="God Save the Queen" duracion="1:11" single="false"/>
+        </album>
+        <album id="302" titulo="News of the World" year="1977" genero="Rock">
+            <cancion titulo="We Will Rock You" duracion="2:02" single="true"/>
+            <cancion titulo="We Are the Champions" duracion="2:59" single="true"/>
+            <cancion titulo="Sheer Heart Attack" duracion="3:26" single="false"/>
+            <cancion titulo="All Dead, All Dead" duracion="3:10" single="false"/>
+            <cancion titulo="Spread Your Wings" duracion="4:34" single="false"/>
+            <cancion titulo="Fight from the Inside" duracion="3:03" single="false"/>
+            <cancion titulo="Get Down, Make Love" duracion="3:51" single="false"/>
+            <cancion titulo="Sleeping on the Sidewalk" duracion="3:06" single="false"/>
+            <cancion titulo="Who Needs You" duracion="3:05" single="false"/>
+            <cancion titulo="It's Late" duracion="6:26" single="false"/>
+            <cancion titulo="My Melancholy Blues" duracion="3:29" single="false"/>
+        </album>
+    </artista>
+    
+    <artista id="4" nombre="Madonna" pais="Estados Unidos">
+        <album id="401" titulo="Like a Virgin" year="1984" genero="Pop">
+            <cancion titulo="Material Girl" duracion="4:00" single="true"/>
+            <cancion titulo="Angel" duracion="4:10" single="true"/>
+            <cancion titulo="Like a Virgin" duracion="3:38" single="true"/>
+            <cancion titulo="Over and Over" duracion="4:11" single="false"/>
+            <cancion titulo="Love Don't Live Here Anymore" duracion="4:49" single="false"/>
+            <cancion titulo="Dress You Up" duracion="4:01" single="true"/>
+            <cancion titulo="Shoo-Bee-Doo" duracion="5:16" single="false"/>
+            <cancion titulo="Pretender" duracion="4:30" single="false"/>
+            <cancion titulo="Stay" duracion="4:06" single="false"/>
+        </album>
+    </artista>
+    
+    <artista id="5" nombre="Led Zeppelin" pais="Reino Unido">
+        <album id="501" titulo="Led Zeppelin IV" year="1971" genero="Rock">
+            <cancion titulo="Black Dog" duracion="4:54" single="false"/>
+            <cancion titulo="Rock and Roll" duracion="3:40" single="true"/>
+            <cancion titulo="The Battle of Evermore" duracion="5:51" single="false"/>
+            <cancion titulo="Stairway to Heaven" duracion="8:02" single="true"/>
+            <cancion titulo="Misty Mountain Hop" duracion="4:38" single="false"/>
+            <cancion titulo="Four Sticks" duracion="4:44" single="false"/>
+            <cancion titulo="Going to California" duracion="3:31" single="false"/>
+            <cancion titulo="When the Levee Breaks" duracion="7:07" single="false"/>
+        </album>
+    </artista>
+</catalogo>

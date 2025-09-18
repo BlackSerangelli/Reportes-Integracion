@@ -1,0 +1,205 @@
+/* Estilos para el catálogo de música XML */
+/* Permite ver el XML con formato en el navegador */
+
+/* Configuración general */
+* {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Elemento raíz - catálogo */
+catalogo {
+    display: block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    margin: 0;
+}
+
+/* Título principal */
+catalogo:before {
+    content: "🎵 CATÁLOGO DE MÚSICA 🎵";
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    background: rgba(0,0,0,0.3);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Artistas */
+artista {
+    display: block;
+    background: white;
+    margin: 20px 0;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+artista:hover {
+    transform: translateY(-5px);
+}
+
+/* Header del artista */
+artista:before {
+    content: "🎤 " attr(nombre) " (" attr(pais) ")";
+    display: block;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 15px 20px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Álbumes */
+album {
+    display: block;
+    background: #f8f9fa;
+    margin: 15px 20px;
+    border-left: 5px solid #3498db;
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+album:hover {
+    background: #e3f2fd;
+    border-left-color: #2196f3;
+    transform: translateX(10px);
+}
+
+/* Header del álbum */
+album:before {
+    content: "📀 " attr(titulo) " (" attr(year) ") - " attr(genero);
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+/* Canciones */
+cancion {
+    display: block;
+    background: white;
+    margin: 8px 0;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border-left: 3px solid #27ae60;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+cancion:hover {
+    background: #f0fff4;
+    border-left-color: #2ecc71;
+    transform: translateX(5px);
+}
+
+/* Contenido de la canción */
+cancion:before {
+    content: "🎵 " attr(titulo) " - " attr(duracion);
+    font-size: 14px;
+    color: #34495e;
+}
+
+/* Badge para sencillos */
+cancion[single="true"]:after {
+    content: "⭐ SINGLE";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #e74c3c;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* Canciones que son sencillos */
+cancion[single="true"] {
+    border-left-color: #e74c3c;
+    background: #fdf2f2;
+}
+
+cancion[single="true"]:hover {
+    background: #fce4e4;
+}
+
+/* Efectos adicionales */
+artista:nth-child(even) {
+    margin-left: 40px;
+}
+
+artista:nth-child(odd) {
+    margin-right: 40px;
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+artista {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+artista:nth-child(1) { animation-delay: 0.1s; }
+artista:nth-child(2) { animation-delay: 0.2s; }
+artista:nth-child(3) { animation-delay: 0.3s; }
+artista:nth-child(4) { animation-delay: 0.4s; }
+artista:nth-child(5) { animation-delay: 0.5s; }
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #5a67d8, #6b46c1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    catalogo {
+        padding: 10px;
+    }
+    
+    artista:nth-child(even),
+    artista:nth-child(odd) {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    catalogo:before {
+        font-size: 20px;
+        padding: 15px;
+    }
+}
