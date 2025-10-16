@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Libros · Auth (JWT) + Redis</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Libros · Auth (JWT) + Redis</div>
+    <div class="session">
+      <span id="authSummary">No autenticado</span>
+      <button id="logoutBtn" class="btn btn-danger btn-sm" style="display:none;">Logout</button>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <section class="card">
+      <div class="card__title">1) Login / Registro</div>
+      <div class="grid grid-2">
+        <div>
+          <div class="row">
+            <input id="loginUsername" placeholder="usuario" class="input">
+            <input id="loginPassword" type="password" placeholder="contraseña" class="input">
+            <button id="loginBtn" class="btn">Login</button>
+            <button id="showRegister" class="btn btn-ghost">Quiero registrarme</button>
+          </div>
+          <div id="loginStatus" class="status"></div>
+        </div>
+        <div id="registerBox" class="hide">
+          <div class="row">
+            <input id="registerUsername" placeholder="nuevo usuario" class="input">
+            <input id="registerEmail" type="email" placeholder="correo@ejemplo.com" class="input">
+            <input id="registerPassword" type="password" placeholder="contraseña" class="input">
+            <button id="registerBtn" class="btn">Registrar</button>
+            <button id="hideRegister" class="btn btn-ghost">Cancelar</button>
+          </div>
+          <div id="registerStatus" class="status"></div>
+        </div>
+      </div>
+
+      <div class="inline-kv mt-8">
+        <div>Auth Base:</div>
+        <code id="authBaseLabel"></code>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card__title">2) Libros (requiere token)</div>
+
+      <div class="grid grid-3 mb-8">
+        <div>
+          <label class="lbl">Host</label>
+          <input id="hostInput" class="input" value="35.225.153.19">
+        </div>
+        <div>
+          <label class="lbl">Puerto</label>
+          <input id="portInput" class="input" value="5000">
+        </div>
+        <div>
+          <label class="lbl">Base Path</label>
+          <input id="basePathInput" class="input" value="/api">
+        </div>
+      </div>
+      <div class="row">
+        <button id="saveConfigBtn" class="btn btn-ghost">Guardar</button>
+        <button id="resetConfigBtn" class="btn btn-ghost">Resetear</button>
+        <div id="connectionStatus" class="status"></div>
+      </div>
+
+      <div class="grid grid-4 mt-12">
+        <div class="row">
+          <button id="getAllBtn" class="btn">GET /api/books</button>
+        </div>
+        <div class="row">
+          <input id="isbnInput" class="input" placeholder="ISBN">
+          <button id="getByIsbnBtn" class="btn">GET /api/books/isbn/:isbn</button>
+        </div>
+        <div class="row">
+          <input id="authorInput" class="input" placeholder="Autor (texto exacto)">
+          <button id="getByAuthorBtn" class="btn">GET /api/books/author/:autor</button>
+        </div>
+        <div class="row">
+          <input id="formatInput" class="input" placeholder="Formato (Físico/Digital)">
+          <button id="getByFormatBtn" class="btn">GET /api/books/format/:format</button>
+        </div>
+      </div>
+
+      <div class="inline-kv mt-8">
+        <div>Libros Base:</div>
+        <code id="booksBaseLabel"></code>
+      </div>
+
+      <div id="statusInfo" class="status-box mt-12">
+        <div id="loadStatus" class="status"></div>
+        <div id="bookCount" class="muted"></div>
+      </div>
+
+      <div id="resultsContainer" class="results mt-12 hide">
+        <div class="row">
+          <button id="toggleResultsBtn" class="btn btn-ghost">Mostrar XML</button>
+        </div>
+        <iframe id="resultsFrame" title="Resultados del Catálogo"></iframe>
+        <pre id="xmlSource" class="hide"></pre>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card__title">3) Operaciones</div>
+      <div class="grid grid-3">
+        <div class="pane">
+          <div class="pane__title">Insertar libro</div>
+          <input id="insertIsbn" class="input" placeholder="978-...">
+          <input id="insertTitle" class="input" placeholder="El gran libro...">
+          <input id="insertYear" class="input" type="number" placeholder="2023">
+          <input id="insertPrice" class="input" type="number" step="0.01" placeholder="19.99">
+          <input id="insertStock" class="input" type="number" placeholder="50">
+          <input id="insertGenre" class="input" placeholder="Género (DB)">
+          <input id="insertFormat" class="input" placeholder="Formato (DB)">
+          <input id="insertAuthors" class="input" placeholder="Autor Uno, Autor Dos">
+          <button id="insertBtn" class="btn btn-success">Insertar</button>
+          <div id="insertStatus" class="status"></div>
+        </div>
+
+        <div class="pane">
+          <div class="pane__title">Actualizar libro por ISBN</div>
+          <input id="updateIsbnTarget" class="input" placeholder="978-...">
+          <input id="updateTitle" class="input" placeholder="Nuevo título (op)">
+          <input id="updatePrice" class="input" type="number" step="0.01" placeholder="Nuevo precio (op)">
+          <input id="updateStock" class="input" type="number" placeholder="Nuevo stock (op)">
+          <button id="updateBtn" class="btn btn-warning">Actualizar</button>
+          <div id="updateStatus" class="status"></div>
+        </div>
+
+        <div class="pane">
+          <div class="pane__title">Borrar libros (múltiples)</div>
+          <textarea id="deleteIsbns" class="input" rows="5" placeholder="978-..., 978-..."></textarea>
+          <button id="deleteBtn" class="btn btn-danger">Borrar</button>
+          <div id="deleteStatus" class="status"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card__title">4) Comparación JWT local vs Redis</div>
+      <div class="row">
+        <button id="compareBtn" class="btn">Comparar access (local vs /token/status + /protected)</button>
+        <div id="compareSummary" class="status"></div>
+      </div>
+      <div class="grid grid-2 mt-12">
+        <div class="pane">
+          <div class="pane__title">LOCAL (decodificado)</div>
+          <pre id="local-jwt-result"></pre>
+        </div>
+        <div class="pane">
+          <div class="pane__title">REDIS (introspect)</div>
+          <pre id="redis-jwt-result"></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+        <div class="card__title">5) Log de cliente</div>
+        <textarea id="clientLog" class="input" rows="10" readonly></textarea>
+    </section>
+
+  </main>
+
+  <script src="{{ url_for('static', filename='utils.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
