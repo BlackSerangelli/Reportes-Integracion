@@ -1,6 +1,6 @@
-# Microservicio de Gestión de Imágenes (Azure + Flask)
+# Microservicio de Gestión de Imágenes (GCP + Flask)
 
-Este microservicio permite subir, listar y visualizar imágenes almacenadas en un contenedor de Azure Blob Storage, con registro de metadatos en una base de datos MariaDB.
+Este microservicio permite subir, listar y visualizar imágenes almacenadas en un bucket de Google Cloud Storage, con registro de metadatos en una base de datos MariaDB.
 
 La API está protegida por un token Bearer y ofrece respuestas en XML (default) y JSON.
 
@@ -13,12 +13,10 @@ El servicio se configura completamente a través de variables de entorno.
 **Autenticación del Servicio (Token):**
 * `API_TOKEN`: Tu token secreto para autenticar las solicitudes (ej: `super_secret_token_123`).
 
-**Conexión a Azure (Service Principal):**
-* `AZURE_CLIENT_ID`: El "Application (client) ID" de tu Service Principal.
-* `AZURE_CLIENT_SECRET`: El "Client Secret" (Valor) que generaste.
-* `AZURE_TENANT_ID`: El "Directory (tenant) ID" de tu organización.
-* `AZURE_STORAGE_ACCOUNT_URL`: La URL de tu cuenta de almacenamiento (ej: `https://imagenesintegracion.blob.core.windows.net`).
-* `CONTAINER_NAME`: El nombre de tu contenedor (ej: `microservicio-libros`).
+**Conexión a Google Cloud Storage:**
+* `GCS_BUCKET_NAME`: El nombre de tu bucket en GCS (ej: `microservicio-libros`).
+* `GCS_PROJECT_ID`: El ID de tu proyecto en Google Cloud Platform.
+* `GOOGLE_APPLICATION_CREDENTIALS`: Ruta completa al archivo JSON de credenciales de tu Service Account (ej: `/ruta/a/service-account-key.json`).
 
 **Conexión a MariaDB:**
 * `DB_HOST`: La dirección del servidor de MariaDB (ej: `localhost` o una IP).
@@ -38,23 +36,29 @@ El servicio se configura completamente a través de variables de entorno.
     ```bash
     pip install -r requirements.txt
     ```
-4.  Ejecuta el script `images.sql` en tu base de datos MariaDB para crear la tabla.
+4.  Ejecuta el script `init.sql` en tu base de datos MariaDB para crear la tabla.
+5.  Crea un bucket en Google Cloud Storage y una Service Account con permisos de "Storage Admin" o "Storage Object Admin".
+6.  Descarga el archivo JSON de credenciales de la Service Account.
 
 ## 3. Ejecución
 
-1.  Exporta todas las variables de entorno listadas arriba.
+1.  Exporta todas las variables de entorno listadas arriba (o usa un archivo `.env`).
     ```bash
     # Ejemplo en Linux/macOS
     export API_TOKEN="tu_token_secreto"
-    export AZURE_CLIENT_ID="8df9c5f9-..."
-    export AZURE_CLIENT_SECRET="Evv8Q~A..."
-    export AZURE_TENANT_ID="ff31d2c0-..."
-    export AZURE_STORAGE_ACCOUNT_URL="[https://imagenesintegracion.blob.core.windows.net](https://imagenesintegracion.blob.core.windows.net)"
-    export CONTAINER_NAME="microservicio-libros"
+    export GCS_BUCKET_NAME="microservicio-libros"
+    export GCS_PROJECT_ID="tu-proyecto-id"
+    export GOOGLE_APPLICATION_CREDENTIALS="/ruta/a/service-account-key.json"
     export DB_HOST="localhost"
     export DB_USER="root"
     export DB_PASSWORD="tu_db_pass"
     export DB_NAME="nombre_de_tu_db"
+    ```
+
+    **Alternativa con archivo `.env`:**
+    ```bash
+    cp .env.example .env
+    # Edita .env con tus valores reales
     ```
 2.  Inicia la aplicación Flask:
     ```bash
