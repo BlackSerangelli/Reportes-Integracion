@@ -1,0 +1,9 @@
+Flask
+pymysql
+google-cloud-storage
+werkzeug
+dicttoxml
+flasgger
+gunicorn
+flask-cors
+python-dotenv
